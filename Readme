@@ -1,0 +1,30 @@
+=== BM Test Project ===
+
+=== Description ===
+This is AWS infrastructure part of the Project.
+Main components of the infrastructure described in main.tf file:
+- Custom VPC;
+- Application Load Balancer registered in two AZs - AZ0 and AZ1;
+- Two Public networks (as min. requirements for ALB) with one NAT GW in AZ0;
+- Internet GW in custom VPC;
+- One Private network in AZ0;
+- EC2 instance in Private network, so called "Worker";
+- EC2 instance in Public network, so called "Bastion";
+- Target Group for ALB which contains "Worker" node;
+- Security groups:
+  - Inbound SG for ALB (ports TCP: 80, 443) and can be limited by list of dedicated IPs;
+  - Inbound SG for "Bastion" (ports TCP: 22) and can be limited by list of dedicated IPs;
+  - Inbound SG for "Worker" allows inbound connections only from ALB and "Bastion";
+
+=== Security Considerations ===
+- Never store "tfstate" locally. Use S3 bucket with versioning and encryption enabled;
+- Use MFA for Programmatic Access AWS account;
+- Forward and Keep ALB access logs in S3 bucket;
+- Use solutions like AWS Vault/Hashicorp Vault for generating temp access tokens for admin sessions.
+- Pay attention that inbound traffic to ALB and Bastion is limited by ports bun NOT limited by subnets.
+  It's recommended to fix it in "variables.tf"
+
+=== Additional information ===
+Current configuration depends on Route 53 and ACM AWS services which has been configured separately.
+After "terraform apply" it's needed to associate ALB with CNAME record in Route 53 configuration manually.
+Output provides key, ip ext Elastic IP of Bastion, Internal IPs of Bastion and Worker EC2 instances.
