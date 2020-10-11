@@ -30,3 +30,4 @@ After "terraform apply" it's needed to associate ALB with CNAME record in Route 
 Output provides key, ip ext Elastic IP of Bastion, Internal IPs of Bastion and Worker EC2 instances.
 
 === This is the test message from the new branch ===
+=== Additional Description added ===
